@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "STM32",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "${default}",
+                "${workspaceFolder}/Core/Inc",
+                "${workspaceFolder}/Core/Src",
+                "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc",
+                "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
+                "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+                "${workspaceFolder}/Drivers/CMSIS/Core/Include",
+
+                // Add test_1 include path
+                "${workspaceFolder}/Core/test_1"
+            ],
+            "defines": [
+                "USE_HAL_DRIVER",
+                "STM32F429xx"
+            ],
+            "compilerPath": "arm-none-eabi-gcc.exe"
+        }
+    ],
+    "version": 4
+}

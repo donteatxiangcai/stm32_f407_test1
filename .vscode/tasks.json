@@ -1,0 +1,140 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        // 1. 独立的CMake配置任务
+        {
+            "label": "CMake Configure",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-S",
+                ".",
+                "-B",
+                "build",
+                "-G",
+                "Ninja",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        
+        // 2. 独立的构建任务（不自动配置CMake）
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "ninja",
+            "args": [
+                "-C",
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "dependsOn": [],  // 移除依赖，完全独立
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        
+        // 3. 独立的清理任务
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "ninja",
+            "args": [
+                "-C",
+                "build",
+                "clean"
+            ]
+        },
+        
+        // 4. 独立的烧录任务
+        {
+            "label": "Flash with MicroLink",
+            "type": "shell",
+            "command": "openocd",
+            "args": [
+                // CMSIS-DAP接口配置
+                "-f", "interface/cmsis-dap.cfg",
+                
+                // STM32F4目标配置
+                "-f", "target/stm32f4x.cfg",
+                
+                // 关键修复：大幅降低初始通信速度
+                "-c", "adapter speed 500",
+                
+                // 调试器身份验证
+                "-c", "adapter serial 123456789ABCDEF",
+                
+                // 复位配置
+                "-c", "reset_config none",
+                
+                // 初始化调试器
+                "-c", "init",
+                
+                // 手动复位芯片
+                "-c", "reset halt",
+                
+                // 提高工作速度
+                "-c", "adapter speed 5000",
+                
+                // 烧录操作
+                "-c", "program build/frank_hou.elf verify",
+                
+                // 复位并退出
+                "-c", "reset run",
+                "-c", "shutdown"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+
+        // 5. 芯片复位任务
+        {
+            "label": "Reset Chip",
+            "type": "shell",
+            "command": "openocd",
+            "args": [
+                "-f", "interface/cmsis-dap.cfg",
+                "-f", "target/stm32f4x.cfg",
+                "-c", "adapter speed 500",
+                "-c", "adapter serial 123456789ABCDEF",
+                "-c", "reset_config none",
+                "-c", "init",
+                "-c", "reset run",
+                "-c", "shutdown"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": ["/c"]
+                }
+            },
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        }
+
+    ]
+}

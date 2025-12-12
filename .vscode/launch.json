@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug with MicroLink",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/frank_hou.elf",
+            
+            // OpenOCD配置
+            "configFiles": [
+                "interface/cmsis-dap.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            
+            // 修复后的调试器初始化命令
+            "openOCDLaunchCommands": [
+                "adapter speed 500",
+                "adapter serial 123456789ABCDEF",
+                "reset_config none",
+                "init",
+                "reset halt",
+                "adapter speed 5000"
+            ],
+            
+            
+            // 使用新的入口点配置
+            "runToEntryPoint": "main",
+            "svdFile": "${workspaceRoot}/stm32f407.svd",
+            "showDevDebugOutput": "raw"
+        }
+    ]
+}
